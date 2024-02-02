@@ -2,23 +2,22 @@ from flask import Flask, render_template, request, redirect, url_for, session
 from flask_mysqldb import MySQL
 import MySQLdb.cursors
 import MySQLdb.cursors, re, hashlib
-from handle import get_db_uri
 
 app = Flask(__name__)
-# loading creds
-# secret key for hashing
+
+# Change this to your secret key (it can be anything, it's for extra protection)
 app.secret_key = 'your secret key'
 
 # Enter your database connection details below
-app.config['MYSQL_HOST'] = 
-app.config['MYSQL_USER'] = 
-app.config['MYSQL_PASSWORD'] = 
+app.config['MYSQL_HOST'] = 'localhost'
+app.config['MYSQL_USER'] = 'portfolio'
+app.config['MYSQL_PASSWORD'] = ''
 app.config['MYSQL_DB'] = 'portfolio'
 
 # Intialize MySQL
 mysql = MySQL(app)
-msg = ['Incorrect username/password!', 'Account already exists!', 'Invalid email address!']
-# The following will be our login page, which will use both GET and POST requests
+
+
 @app.route('/', methods=['GET', 'POST'])
 def login():
     # Output a message if something goes wrong...
@@ -30,7 +29,7 @@ def login():
         password = request.form['password']
         # Check if account exists using MySQL
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursor.execute('SELECT * FROM accounts WHERE username = %s AND password = %s', (username, password,))
+        cursor.execute('SELECT * FROM accounts WHERE username = %s AND password = %s', (username, password))
         # Fetch one record and return result
         account = cursor.fetchone()
         # If account exists in accounts table in out database
@@ -40,14 +39,16 @@ def login():
             session['id'] = account['id']
             session['username'] = account['username']
             # Redirect to home page
-            return redirect(url_for('home'))
+            return 'Logged in successfully!'
         else:
             # Account doesnt exist or username/password incorrect
             msg = 'Incorrect username/password!'
     # Show the login form with message (if any)
     return render_template('index.html', msg=msg)
-# http://localhost:5000/python/logout - this will be the logout page
-@app.route('/moodmagic/logout')
+
+
+
+@app.route('/pythonlogin/logout')
 def logout():
     # Remove session data, this will log the user out
    session.pop('loggedin', None)
@@ -56,8 +57,8 @@ def logout():
    # Redirect to login page
    return redirect(url_for('login'))
 
-# http://localhost:5000/pythinlogin/register - this will be the registration page, we need to use both GET and POST requests
-@app.route('/moodmagic/register', methods=['GET', 'POST'])
+
+@app.route('/pythonlogin/register', methods=['GET', 'POST'])
 def register():
     # Output message if something goes wrong...
     msg = ''
@@ -67,7 +68,7 @@ def register():
         username = request.form['username']
         password = request.form['password']
         email = request.form['email']
-                # Check if account exists using MySQL
+        # Check if account exists using MySQL
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         cursor.execute('SELECT * FROM accounts WHERE username = %s', (username,))
         account = cursor.fetchone()
@@ -89,24 +90,14 @@ def register():
             cursor.execute('INSERT INTO accounts VALUES (NULL, %s, %s, %s)', (username, password, email,))
             mysql.connection.commit()
             msg = 'You have successfully registered!'
-            return render_template('index.html', msg=msg)
     elif request.method == 'POST':
         # Form is empty... (no POST data)
         msg = 'Please fill out the form!'
     # Show registration form with message (if any)
     return render_template('register.html', msg=msg)
 
-# http://localhost:5000/pythinlogin/home - this will be the home page, only accessible for logged in users
-@app.route('/moodmagic/home')
-def home():
-    # Check if the user is logged in
-    if 'loggedin' in session:
-        # User is loggedin show them the home page
-        return render_template('home.html', username=session['username'])
-    # User is not loggedin redirect to login page
-    return redirect(url_for('login'))
-# http://localhost:5000/pythinlogin/profile - this will be the profile page, only accessible for logged in users
-@app.route('/moodmagic/profile')
+
+@app.route('/pythonlogin/profile')
 def profile():
     # Check if the user is logged in
     if 'loggedin' in session:
@@ -119,6 +110,5 @@ def profile():
     # User is not logged in redirect to login page
     return redirect(url_for('login'))
 
-
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', port=5000, debug=True)
