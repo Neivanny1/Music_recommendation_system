@@ -20,3 +20,21 @@ CREATE TABLE accounts (
 );
 
 INSERT INTO `accounts` (`username`, `password`, `email`) VALUES ('test', '0ef15de6149819f2d10fc25b8c994b574245f193', 'test@test.com');
+-- stores users history
+CREATE TABLE IF NOT EXISTS user_history (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT,
+    song_id INT,
+    song_name VARCHAR(255),
+    FOREIGN KEY (user_id) REFERENCES accounts(id),
+    INDEX fk_user_history_user_id (user_id),
+    INDEX fk_user_history_song_id (song_id)
+);
+--creates table artists
+CREATE TABLE IF NOT EXISTS my_artists (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT,
+    artist_name VARCHAR(255),
+    FOREIGN KEY (user_id) REFERENCES accounts(id),
+    INDEX fk_my_artists_user_id (user_id)
+);

@@ -5,4 +5,25 @@
 {% block content %}
 <h2>Home Page</h2>
 <p>Welcome back, {{ username }}!</p>
+<div id="msg-container" class="msg">{{ msg }}</div>
+
+{% if msg != 'Artists submitted successfully!' %}
+    {% include 'artists.html' %}
+{% else %}
+    {% include 'dashboard.html' %}
+{% endif %}
+
+{% endblock %}
+
+{% block scripts %}
+    {{ super() }}  {# Include content of parent scripts block #}
+    <script>
+        // Automatically hide the message container after 3 seconds
+        setTimeout(function() {
+            var msgContainer = document.getElementById('msg-container');
+            if (msgContainer) {
+                msgContainer.style.display = 'none';
+            }
+        }, 3000);
+    </script>
 {% endblock %}

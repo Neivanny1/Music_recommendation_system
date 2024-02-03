@@ -74,13 +74,33 @@ def logout():
    return redirect(url_for('login'))
 
 # home redirection
-@app.route('/home/')
+@app.route('/home', methods=['GET', 'POST'])
 def home():
     # Check if the user is logged in
     if 'loggedin' in session:
-        # User is loggedin show them the home page
+        # User is logged in
+        if request.method == 'POST':
+            user_id = session.get('id')
+            if user_id:
+                try:
+                    with mysql.connection.cursor() as cursor:
+                        for i in range(1, 21):
+                            artist_name = request.form.get(f'artist{i}')
+                            if artist_name:
+                                cursor.execute("INSERT INTO my_artists (user_id, artist_name) VALUES (%s, %s)",
+                                               (user_id, artist_name))
+                                mysql.connection.commit()
+                    msg = 'Artists submitted successfully!'
+                    return render_template('home.html', username=session['username'], msg=msg)
+                except MySQLdb.Error as e:
+                    print(f"Error submitting artists: {e}")
+                    msg = 'An error occurred while submitting artists.'
+                    return render_template('home.html', username=session['username'], msg=msg)
+
+        # Render the home page with the form
         return render_template('home.html', username=session['username'])
-    # User is not loggedin redirect to login page
+
+    # User is not logged in, redirect to login page
     return redirect(url_for('login'))
 
 
@@ -97,6 +117,10 @@ def profile():
         return render_template('profile.html', account=account)
     # User is not logged in redirect to login page
     return redirect(url_for('login'))
+
+
+
+
 # start flask app
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
