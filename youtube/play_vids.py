@@ -20,12 +20,6 @@ def search():
         if results['result']:
             video_id = results['result'][0]['id']
             
-            # Download video
-            youtube_url = f'https://www.youtube.com/watch?v={video_id}'
-            video = YouTube(youtube_url)
-            video_stream = video.streams.filter(only_audio=True).first()
-            video_stream.download('./static')
-
             return redirect(url_for('play', video_id=video_id))
 
         else:
