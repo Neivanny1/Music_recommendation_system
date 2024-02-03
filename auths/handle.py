@@ -7,4 +7,3 @@ def get_db_uri():
         content = file.read().strip()
     credentials = content.split(",")
     return credentials
-db_credentials = get_db_uri()  # Output: ['localhost', 'portfolio', 'portfolio']
