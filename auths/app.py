@@ -84,7 +84,7 @@ def home():
             if user_id:
                 try:
                     with mysql.connection.cursor() as cursor:
-                        for i in range(1, 21):
+                        for i in range(1, 6):
                             artist_name = request.form.get(f'artist{i}')
                             if artist_name:
                                 cursor.execute("INSERT INTO my_artists (user_id, artist_name) VALUES (%s, %s)",
@@ -98,7 +98,7 @@ def home():
                     return render_template('home.html', username=session['username'], msg=msg)
 
         # Render the home page with the form
-        return render_template('home.html', username=session['username'])
+        return render_template('home.html', username=session.get('username'))
 
     # User is not logged in, redirect to login page
     return redirect(url_for('login'))
