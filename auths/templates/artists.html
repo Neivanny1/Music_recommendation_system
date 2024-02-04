@@ -1,4 +1,13 @@
-<form action="{{ url_for('home') }}" method="post">
+{% extends 'layout.html' %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<h2>Home Page</h2>
+<p>Welcome back, {{ username }}!</p>
+<div id="msg-container" class="msg">{{ msg }}</div>
+
+<form action="{{ url_for('submit_artists') }}" method="post">
     <h2>Favorite Artists</h2>
     <p>Enter your 5 favorite artists:</p>
 
@@ -6,6 +15,21 @@
         <label for="artist{{ i }}">Artist {{ i }}:</label>
         <input type="text" name="artist{{ i }}" required>
     {% endfor %}
+    
 <br><br>
     <input type="submit" value="Submit">
 </form>
+
+{% endblock %}
+{% block scripts %}
+    {{ super() }}  {# Include content of parent scripts block #}
+    <script>
+        // Automatically hide the message container after 3 seconds
+        setTimeout(function() {
+            var msgContainer = document.getElementById('msg-container');
+            if (msgContainer) {
+                msgContainer.style.display = 'none';
+            }
+        }, 3000);
+    </script>
+{% endblock %}

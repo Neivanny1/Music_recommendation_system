@@ -5,14 +5,7 @@
 {% block content %}
 <h2>Home Page</h2>
 <p>Welcome back, {{ username }}!</p>
-<div id="msg-container" class="msg">{{ msg }}</div>
-
-{% if msg != 'Artists submitted successfully!' %}
-    {% include 'artists.html' %}
-{% else %}
     {% include 'dashboard.html' %}
-{% endif %}
-
 {% endblock %}
 
 {% block scripts %}
