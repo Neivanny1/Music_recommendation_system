@@ -162,3 +162,6 @@ archive.zip
 songdata.csv
 similarity.pkl
 df.pkl
+creds
+check.py
+__pycache__
