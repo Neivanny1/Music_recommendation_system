@@ -1,4 +1,0 @@
-https://www.youtube.com/watch?v={song_id}
-requirements
-pip install youtube-search-python
-pip install pytube Flask

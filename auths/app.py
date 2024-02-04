@@ -5,6 +5,9 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from handle import get_db_uri
 from youtubesearchpython import VideosSearch
 from pytube import YouTube
+import numpy as np
+import pandas as pd
+import pickle
 
 app = Flask(__name__)
 
@@ -163,6 +166,37 @@ def search():
 @app.route('/home/<video_id>')
 def play(video_id):
     return render_template('home.html', video_id=video_id)
+
+
+"""
+Importing trained model to main file
+"""
+
+# laoding models
+df = pickle.load(open('df.pkl','rb'))
+similarity = pickle.load(open('similarity.pkl','rb'))
+
+
+def recommendation(song_df):
+    idx = df[df['song'] == song_df].index[0]
+    distances = sorted(list(enumerate(similarity[idx])), reverse=True, key=lambda x: x[1])
+
+    songs = []
+    for m_id in distances[1:21]:
+        songs.append(df.iloc[m_id[0]].song)
+
+    return songs
+@app.route('/foru/')
+def index_rcom():
+    names = list(df['song'].values)
+    return render_template('rcom.html',name = names)
+@app.route('/recom/',methods=['POST'])
+def mysong_rcom():
+    user_song = request.form['names']
+    songs = recommendation(user_song)
+
+    return render_template('rcom.html',songs=songs)
+
 
 # start flask app
 if __name__ == '__main__':
