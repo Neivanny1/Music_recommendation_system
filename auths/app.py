@@ -121,6 +121,8 @@ def profile():
         return render_template('profile.html', account=account)
     # User is not logged in redirect to login page
     return redirect(url_for('login'))
+
+# render searched song
 @app.route('/search/', methods=['POST'])
 def search():
     if request.method == 'POST':
@@ -129,15 +131,34 @@ def search():
         # Get video ID
         videos_search = VideosSearch(song_name, limit=1)
         results = videos_search.result()
-        
+
         if results['result']:
             video_id = results['result'][0]['id']
-            
-            return redirect(url_for('play', video_id=video_id))
 
+            # Check if the song already exists in user_history for the logged-in user
+            user_id = session.get('id')
+            if user_id:
+                with mysql.connection.cursor() as cursor:
+                    cursor.execute("SELECT * FROM user_history WHERE user_id = %s AND song_id = %s", (user_id, video_id))
+                    existing_song = cursor.fetchone()
+
+                    if not existing_song:
+                        # Song doesn't exist for the user, insert into user_history
+                        cursor.execute("INSERT INTO user_history (user_id, song_id, song_name) VALUES (%s, %s, %s)",
+                                       (user_id, video_id, song_name))
+                        mysql.connection.commit()
+                        
+                        return redirect(url_for('play', video_id=video_id))
+                    else:
+                        msg = "Song already exists in your history."
+                        return render_template('home.html', msg=msg)
+            else:
+                msg = "User not logged in."
+                return render_template('home.html', msg=msg)
         else:
             msg = "No results found for the given song name."
             return render_template('home.html', msg=msg)
+
 
 @app.route('/home/<video_id>')
 def play(video_id):

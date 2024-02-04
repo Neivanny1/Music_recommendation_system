@@ -24,7 +24,7 @@ INSERT INTO `accounts` (`username`, `password`, `email`) VALUES ('test', '0ef15d
 CREATE TABLE IF NOT EXISTS user_history (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT,
-    song_id INT,
+    song_id VARCHAR(50),
     song_name VARCHAR(255),
     FOREIGN KEY (user_id) REFERENCES accounts(id),
     INDEX fk_user_history_user_id (user_id),
