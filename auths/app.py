@@ -59,7 +59,7 @@ def login():
             session['loggedin'] = True
             session['id'] = account['id']
             session['username'] = account['username']
-            return render_template('artists.html', msg='Logged in successfully!')
+            return render_template('home.html', msg='Logged in successfully!')
         else:
             msg = 'Incorrect username/password!'
 
@@ -84,7 +84,7 @@ def home():
         return render_template('home.html', username=session['username'])
     # User is not loggedin redirect to login page
     return redirect(url_for('login'))
-@app.route('/submit_artists', methods=['POST'])
+@app.route('/submit_artists/', methods=['POST'])
 def submit_artists():
     if request.method == 'POST':
         user_id = session.get('id')  # Assuming you are using user sessions
