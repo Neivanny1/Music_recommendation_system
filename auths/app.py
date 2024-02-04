@@ -121,6 +121,27 @@ def profile():
         return render_template('profile.html', account=account)
     # User is not logged in redirect to login page
     return redirect(url_for('login'))
+@app.route('/search/', methods=['POST'])
+def search():
+    if request.method == 'POST':
+        song_name = request.form['song_name']
+
+        # Get video ID
+        videos_search = VideosSearch(song_name, limit=1)
+        results = videos_search.result()
+        
+        if results['result']:
+            video_id = results['result'][0]['id']
+            
+            return redirect(url_for('play', video_id=video_id))
+
+        else:
+            msg = "No results found for the given song name."
+            return render_template('home.html', msg=msg)
+
+@app.route('/home/<video_id>')
+def play(video_id):
+    return render_template('home.html', video_id=video_id)
 
 # start flask app
 if __name__ == '__main__':
