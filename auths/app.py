@@ -9,8 +9,32 @@ import numpy as np
 import pandas as pd
 import pickle
 
-app = Flask(__name__)
+"""
+Importing trained model to main file
+"""
+# Loading models
+df = pickle.load(open('df.pkl', 'rb'))
+similarity = pickle.load(open('similarity.pkl', 'rb'))
 
+# Recommendation function
+def recommendation(song_df):
+    idx = df[df['song'] == song_df].index[0]
+    distances = sorted(list(enumerate(similarity[idx])), reverse=True, key=lambda x: x[1])
+
+    songs = []
+    for m_id in distances[1:21]:
+        songs.append(df.iloc[m_id[0]].song)
+
+    return songs
+
+# YouTube search function
+def search_youtube(song):
+    video_search = VideosSearch(song, limit = 1)
+    results = video_search.result()
+    if 'result' in results and len(results['result']) > 0:
+        return results['result'][0]['id']
+    return None
+app = Flask(__name__)
 creds = get_db_uri()
 # secret key for hashing
 app.secret_key = creds[3]
@@ -20,6 +44,10 @@ app.config['MYSQL_HOST'] = creds[0]
 app.config['MYSQL_USER'] = creds[1]
 app.config['MYSQL_PASSWORD'] = ''
 app.config['MYSQL_DB'] = creds[1]
+
+
+
+
 
 # Intialize MySQL
 mysql = MySQL(app)
@@ -47,26 +75,41 @@ def register():
     return render_template('register.html', msg=msg)
 
 # login in
-@app.route('/', methods=['GET', 'POST'])
-def login():
-    msg = ''
-    if request.method == 'POST' and 'username' in request.form and 'password' in request.form:
-        username = request.form['username']
-        password = request.form['password']
+# @app.route('/', methods=['GET', 'POST'])
+# def login():
+#     msg = ''
+#     if request.method == 'POST' and 'username' in request.form and 'password' in request.form:
+#         username = request.form['username']
+#         password = request.form['password']
 
-        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursor.execute('SELECT * FROM accounts WHERE username = %s', (username,))
-        account = cursor.fetchone()
+#         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+#         cursor.execute('SELECT * FROM accounts WHERE username = %s', (username,))
+#         account = cursor.fetchone()
 
-        if account and check_password_hash(account['password'], password):
-            session['loggedin'] = True
-            session['id'] = account['id']
-            session['username'] = account['username']
-            return render_template('home.html', msg='Logged in successfully!')
-        else:
-            msg = 'Incorrect username/password!'
+#         if account and check_password_hash(account['password'], password):
+#             session['loggedin'] = True
+#             session['id'] = account['id']
+#             session['username'] = account['username']
+#             return render_template('home.html', msg='Logged in successfully!')
+#         else:
+#             msg = 'Incorrect username/password!'
 
-    return render_template('index.html', msg=msg)
+#     return render_template('index.html', msg=msg)
+
+"""
+Rendering recommended songs
+"""
+# Paths
+@app.route('/')
+def index():
+    names = list(df['song'].values)
+    return render_template('show.html', names=names)
+
+@app.route('/recommends/', methods=['POST'])
+def mysong():
+    user_song = request.form['names']
+    songs = recommendation(user_song)
+    return render_template('show.html', songs=songs)
 
 # logout
 @app.route('/logout/')
@@ -84,7 +127,7 @@ def home():
     # Check if the user is logged in
     if 'loggedin' in session:
         # User is loggedin show them the home page
-        return render_template('home.html', username=session['username'])
+        return render_template('show.html', username=session['username'])
     # User is not loggedin redirect to login page
     return redirect(url_for('login'))
 
@@ -170,38 +213,6 @@ def search():
 @app.route('/home/<video_id>')
 def play(video_id):
     return render_template('home.html', video_id=video_id)
-
-
-"""
-Importing trained model to main file
-"""
-
-# laoding models
-df = pickle.load(open('df.pkl','rb'))
-similarity = pickle.load(open('similarity.pkl','rb'))
-
-
-def recommendation(song_df):
-    idx = df[df['song'] == song_df].index[0]
-    distances = sorted(list(enumerate(similarity[idx])), reverse=True, key=lambda x: x[1])
-
-    songs = []
-    for m_id in distances[1:21]:
-        songs.append(df.iloc[m_id[0]].song)
-
-    return songs
-
-
-@app.route('/foru/')
-def index_rcom():
-    names = list(df['song'].values)
-    return render_template('rcom.html',name = names)
-
-@app.route('/recom/',methods=['POST'])
-def mysong_rcom():
-    user_song = request.form['names']
-    songs = recommendation(user_song)
-    return render_template('rcom.html',songs=songs)
 
 
 # start flask app
