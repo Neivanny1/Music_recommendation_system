@@ -79,7 +79,7 @@ def logout():
    return redirect(url_for('login'))
 
 # home redirection
-@app.route('/home')
+@app.route('/home/')
 def home():
     # Check if the user is logged in
     if 'loggedin' in session:
@@ -87,14 +87,18 @@ def home():
         return render_template('home.html', username=session['username'])
     # User is not loggedin redirect to login page
     return redirect(url_for('login'))
-@app.route('/submit_artists/', methods=['POST'])
-def submit_artists():
+
+
+@app.route('/artists/', methods=['POST', 'GET'])
+def artists():
+    user_id = session.get('id')
+    username = session.get('username')    
     if request.method == 'POST':
-        user_id = session.get('id')  # Assuming you are using user sessions
+  # Assuming you are using user sessions
         if user_id:
             try:
                 with mysql.connection.cursor() as cursor:
-                    for i in range(1, 21):
+                    for i in range(1, 6):
                         artist_name = request.form.get(f'artist{i}')
                         if artist_name:
                             cursor.execute("INSERT INTO my_artists (user_id, artist_name) VALUES (%s, %s)",
@@ -105,11 +109,12 @@ def submit_artists():
             except MySQLdb.Error as e:
                 print(f"Error submitting artists: {e}")
                 msg = 'An error occurred while submitting artists.'
-                return render_template('artists.html', msg=msg)
+                return render_template('artists.html', msg=msg, username=username)
         else:
             return 'User not logged in.'
     else:
-        return redirect(url_for('artists'))
+        return render_template('artists.html', username=username)
+
 
 
 
@@ -157,7 +162,7 @@ def search():
                         return render_template('home.html', msg=msg)
             else:
                 msg = "User not logged in."
-                return render_template('home.html', msg=msg)
+                return render_template('index.html', msg=msg)
         else:
             msg = "No results found for the given song name."
             return render_template('home.html', msg=msg)
@@ -186,15 +191,17 @@ def recommendation(song_df):
         songs.append(df.iloc[m_id[0]].song)
 
     return songs
+
+
 @app.route('/foru/')
 def index_rcom():
     names = list(df['song'].values)
     return render_template('rcom.html',name = names)
+
 @app.route('/recom/',methods=['POST'])
 def mysong_rcom():
     user_song = request.form['names']
     songs = recommendation(user_song)
-
     return render_template('rcom.html',songs=songs)
 
 
