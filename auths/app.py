@@ -131,7 +131,7 @@ def profile():
     return redirect(url_for('login'))
 
 # render searched song
-@app.route('/search/', methods=['POST'])
+@app.route('/home/search/', methods=['POST'])
 def search():
     if request.method == 'POST':
         song_name = request.form['song_name']
@@ -158,7 +158,6 @@ def search():
                         
                         return redirect(url_for('play', video_id=video_id))
                     else:
-                        msg = "Song already exists in your history."
                         return render_template('home.html', msg=msg)
             else:
                 msg = "User not logged in."
