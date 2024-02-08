@@ -17,3 +17,7 @@ Login page screenshot ===========>
 <br><br><br>
 ![Home page](static/login.PNG)
 <br><br>
+### USAGE
+<br><br>
+### INSTALLATION
+<br><br>
