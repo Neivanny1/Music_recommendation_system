@@ -1,3 +1,4 @@
+#/usr/bin/python3
 """
 Imports all necesary modules to run the app
 """
@@ -11,17 +12,63 @@ from pytube import YouTube
 import numpy as np
 import pandas as pd
 import pickle
+from test import recommendation, dropdown, search_youtube
 
+name = dropdown()
 """
 Intiliazing the flask app
 """
 app = Flask(__name__)
 """
+Route to the landing page
+"""
+@app.route('/songs/')
+def index():
+    app.logger.info(f"Names: {name}")
+    return render_template('landing.html', name=name)
+
+
+"""
+Routes to the recommended songs to user
+"""
+@app.route('/recom/', methods=['POST'])
+def mysong():
+    user_song = request.form['names']
+    songs = recommendation(user_song)
+    return render_template('landing.html', songs=songs)
+
+
+"""
+Gets event clicks from song clicked
+Then passes the song name to search_youtube
+"""
+@app.route('/process_song_click', methods=['POST'])
+def process_song_click():
+    data = request.get_json()
+    clicked_song = data.get('clicked_song')
+    video_id = search_youtube(clicked_song)
+    return video_id
+"""
+Plays song after geting the song id
+"""
+@app.route('/play/<video_id>')
+def play(video_id):
+    return render_template('yt.html', video_id=video_id)
+
+@app.route('/landing/')
+def landing():
+    return render_template('landing.html')
+
+@app.route('/dashboard/')
+def dashboard():
+    return render_template('dashboard.html')
+
+
+"""
 Loads db creds to the app
 """
 creds = get_db_uri()
-# secret key for hashing
-app.secret_key = creds[3]
+
 
 """
 Unpacking db creds
@@ -30,6 +77,8 @@ app.config['MYSQL_HOST'] = creds[0]
 app.config['MYSQL_USER'] = creds[1]
 app.config['MYSQL_PASSWORD'] = ''
 app.config['MYSQL_DB'] = creds[1]
+# secret key for hashing
+app.secret_key = creds[3]
 
 
 """
@@ -95,7 +144,7 @@ home redirection
 @app.route('/home/')
 def home():
     if 'loggedin' in session:
-        return render_template('show.html', username=session['username'])
+        return render_template('home.html', username=session['username'])
     return redirect(url_for('login'))
 
 """
@@ -174,7 +223,7 @@ def search():
 Plays videos
 """
 @app.route('/home/<video_id>')
-def play(video_id):
+def play_to_home(video_id):
     return render_template('home.html', video_id=video_id)
 
 

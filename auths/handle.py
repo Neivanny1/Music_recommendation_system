@@ -1,3 +1,7 @@
+#/usr/bin/python3
+"""
+Loads the database credentials
+"""
 import os
 def get_db_uri():
     """
@@ -7,3 +11,6 @@ def get_db_uri():
         content = file.read().strip()
     credentials = content.split(",")
     return credentials
+
+
+
