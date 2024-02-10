@@ -24,8 +24,7 @@ Route to the landing page
 """
 @app.route('/songs/')
 def index():
-    app.logger.info(f"Names: {name}")
-    return render_template('landing.html', name=name)
+    return render_template('landing.html')
 
 
 """
@@ -226,6 +225,14 @@ Plays videos
 def play_to_home(video_id):
     return render_template('home.html', video_id=video_id)
 
+@app.route('/activity')
+def activity():
+    with mysql.connection.cursor() as cursor:
+        cursor.execute("SELECT song_id FROM user_history")
+        song_ids = [row[0] for row in cursor.fetchall()]
+
+    # Render the activity.html template with the song IDs
+    return render_template('activity.html', song_ids=song_ids)
 
 """
 start flask app

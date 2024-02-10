@@ -9,28 +9,20 @@
   </head>
   <body style="background:black; color:white;">
 
-  <div class="container">
-    <h2 class="text-center">Recommended for You</h2>
-    <!-- <form action="/recom" method="post">
-      <div class="form-group">
-        <label for="text">Select Song</label>
-
-        <select name="name" class="form-control">
-          {% for i in name %}
-          <option value="{{i}}">{{i}}</option>
-          {% endfor %}
-        </select> -->
-
-        <form action="/recom" method="post">
+    <div class="container">
+        <h2 class="text-center">Music Recommendation System</h2>
+        <form action="/recom/" method="post">
           <div class="form-group">
-            <label for="text">Type Song</label>
-        
-            <!-- Replace the select box with an input field -->
-            <input type="text" name="names" class="form-control">
+            <label for="text">Select Song</label>
+    
+            <select name="names" class="form-control">
+              {% for i in name %}
+              <option value="{{i}}">{{i}}</option>
+              {% endfor %}
+            </select>
           </div>
-      </div>
-
-      <button style="margin-top:20px;" type="submit" class="btn btn-primary btn-lg">recommendation</button>
+    
+          <button style="margin-top:20px;" type="submit" class="btn btn-primary btn-lg">recommendation</button>
     </form>
     <div>
       <div class="row">
@@ -44,9 +36,6 @@
       {% endfor %}
       </div>
     </div>
-
-    <h2>Recommended Songs</h2>
-    <iframe width="560" height="315" src="https://www.youtube.com/embed/{{ video_id }}" frameborder="0" allowfullscreen></iframe>
     <script>
         function songClicked(song) {
             // Log the clicked song

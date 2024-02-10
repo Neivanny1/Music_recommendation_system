@@ -9,8 +9,8 @@
   <body style="background:black; color:white;">
 
   <div class="container">
-    <h2 class="text-center">Music Recommendation System</h2>
-    <form action="/recommends/" method="post">
+    <h2 class="text-center">Recommnded to You</h2>
+    <!-- <form action="/recommends/" method="post">
       <div class="form-group">
         <label for="text">Select Song</label>
 
@@ -18,7 +18,14 @@
           {% for i in name %}
           <option value="{{i}}">{{i}}</option>
           {% endfor %}
-        </select>
+        </select> -->
+        <form action="/recom" method="post">
+          <div class="form-group">
+            <label for="text">Type Song</label>
+        
+            <!-- Replace the select box with an input field -->
+            <input type="text" name="names" class="form-control">
+          </div>
       </div>
 
       <button style="margin-top:20px;" type="submit" class="btn btn-primary btn-lg">recommendation</button>
