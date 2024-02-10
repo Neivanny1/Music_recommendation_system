@@ -23,8 +23,10 @@ Code editor prefered VS code <br>
 MYsql 5.7 or higher <br>
 Python 3<br>
 Jupyter Notebook<br>
-Flask<br>
-### INSTALLATION<br><br>
+Flask
+<br><br>
+### Installation
+<br>
 Kindly note systems has only be tested on ubuntu 20.04 and sql 5.7 and above <br>
 Open Terminal <br>
 git clone https://github.com/Neivanny1/Music_recommendation_system.git
@@ -45,5 +47,5 @@ Run python3 app.py
 Then cd to auths directory  <br>
 Run: python3 app.py
 <br><br>
-###  Project Demo <br>
+### Project Demo video <br>
 ![Demo](static/demo.mp4)
