@@ -12,62 +12,16 @@ from pytube import YouTube
 import numpy as np
 import pandas as pd
 import pickle
-from test import recommendation, dropdown, search_youtube
-
-name = dropdown()
-"""
-Intiliazing the flask app
-"""
-app = Flask(__name__)
-"""
-Route to the landing page
-"""
-@app.route('/songs/')
-def index():
-    return render_template('landing.html')
-
-
-"""
-Routes to the recommended songs to user
-"""
-@app.route('/recom/', methods=['POST'])
-def mysong():
-    user_song = request.form['names']
-    songs = recommendation(user_song)
-    return render_template('landing.html', songs=songs)
-
-
-"""
-Gets event clicks from song clicked
-Then passes the song name to search_youtube
-"""
-@app.route('/process_song_click', methods=['POST'])
-def process_song_click():
-    data = request.get_json()
-    clicked_song = data.get('clicked_song')
-    video_id = search_youtube(clicked_song)
-    return video_id
-"""
-Plays song after geting the song id
-"""
-@app.route('/play/<video_id>')
-def play(video_id):
-    return render_template('yt.html', video_id=video_id)
-
-@app.route('/landing/')
-def landing():
-    return render_template('landing.html')
-
-@app.route('/dashboard/')
-def dashboard():
-    return render_template('dashboard.html')
-
 
 """
 Loads db creds to the app
 """
 creds = get_db_uri()
 
+"""
+Intiliazing the flask app
+"""
+app = Flask(__name__)
 
 """
 Unpacking db creds
@@ -79,32 +33,10 @@ app.config['MYSQL_DB'] = creds[1]
 # secret key for hashing
 app.secret_key = creds[3]
 
-
 """
 Intialize MySQL
 """
 mysql = MySQL(app)
-
-"""
-Adds and route to register users to the system
-"""
-@app.route('/register/', methods=['GET', 'POST'])
-def register():
-    msg = ''
-    if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
-        email = request.form['email']
-        # Hashing the password using Werkzeug
-        hashed_password = generate_password_hash(password, method='pbkdf2:sha256')
-        # pushing user data into the db
-        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursor.execute("INSERT INTO accounts (username, password, email) VALUES (%s, %s, %s)",
-                       (username, hashed_password, email))
-        mysql.connection.commit()
-        msg = 'You have successfully registered!'
-        return render_template('index.html', msg=msg)
-    return render_template('register.html', msg=msg)
 
 """
 Handles logins to app
@@ -175,6 +107,16 @@ def artists():
         return render_template('artists.html', username=username)
 
 """
+History
+"""
+@app.route('/activity')
+def activity():
+    with mysql.connection.cursor() as cursor:
+        cursor.execute('SELECT song_id FROM user_history WHERE user_id = %s', (session['id'],))
+        song_ids = [row[0] for row in cursor.fetchall()]
+    return render_template('activity.html', song_ids=song_ids)
+
+"""
 Profiles details
 """
 @app.route('/profile/')
@@ -183,9 +125,11 @@ def profile():
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         cursor.execute('SELECT * FROM accounts WHERE id = %s', (session['id'],))
         account = cursor.fetchone()
-        return render_template('profile.html', account=account)
+        with mysql.connection.cursor() as cursor:
+            cursor.execute('SELECT song_id FROM user_history WHERE user_id = %s', (session['id'],))
+            song_ids = [row[0] for row in cursor.fetchall()]
+        return render_template('profile.html', account=account, song_ids=song_ids)
     return redirect(url_for('login'))
-
 """
 Render searched song
 """
@@ -207,33 +151,52 @@ def search():
                         cursor.execute("INSERT INTO user_history (user_id, song_id, song_name) VALUES (%s, %s, %s)",
                                        (user_id, video_id, song_name))
                         mysql.connection.commit()
-                        
-                        return redirect(url_for('play', video_id=video_id))
+                        print('This is ID:', video_id)
+                        return render_template('dashboard.html', video_id=video_id)
                     else:
-                        return render_template('home.html', msg1='oops song not found')
+                        return render_template('dashboard.html', msg1='oops song not found')
             else:
                 msg = "User not logged in."
                 return render_template('index.html', msg=msg)
         else:
             msg = "No results found for the given song name."
-            return render_template('home.html', msg=msg)
+            return render_template('dashboard.html', msg=msg)
 
 """
 Plays videos
 """
-@app.route('/home/<video_id>')
-def play_to_home(video_id):
-    return render_template('home.html', video_id=video_id)
+@app.route('/dashboard/<video_id>')
+def play_to_dash(video_id):
+    return render_template('dashboard.html', video_id=video_id)
 
-@app.route('/activity')
-def activity():
-    with mysql.connection.cursor() as cursor:
-        cursor.execute("SELECT song_id FROM user_history")
-        song_ids = [row[0] for row in cursor.fetchall()]
+"""
+Adds and route to register users to the system
+"""
+@app.route('/register/', methods=['GET', 'POST'])
+def register():
+    msg = ''
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        email = request.form['email']
+        # Hashing the password using Werkzeug
+        hashed_password = generate_password_hash(password, method='pbkdf2:sha256')
+        # pushing user data into the db
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute("INSERT INTO accounts (username, password, email) VALUES (%s, %s, %s)",
+                       (username, hashed_password, email))
+        mysql.connection.commit()
+        msg = 'You have successfully registered!'
+        return render_template('index.html', msg=msg)
+    return render_template('register.html', msg=msg)
 
-    # Render the activity.html template with the song IDs
-    return render_template('activity.html', song_ids=song_ids)
-
+'''
+Dashboard
+'''
+@app.route('/dashboard/')
+def dashboard():
+    return render_template('dashboard.html')
+    
 """
 start flask app
 """
