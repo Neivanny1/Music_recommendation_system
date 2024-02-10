@@ -45,5 +45,5 @@ Run python3 app.py
 Then cd to auths directory  <br>
 Run: python3 app.py
 <br><br>
-###  Project Demo
+###  Project Demo <br>
 ![Demo](static/demo.mp4)
