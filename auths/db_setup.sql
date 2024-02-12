@@ -19,7 +19,7 @@ CREATE TABLE accounts (
   PRIMARY KEY (id)
 );
 
-INSERT INTO `accounts` (`username`, `password`, `email`) VALUES ('test', '0ef15de6149819f2d10fc25b8c994b574245f193', 'test@test.com');
+--INSERT INTO `accounts` (`username`, `password`, `email`) VALUES ('test', '0ef15de6149819f2d10fc25b8c994b574245f193', 'test@test.com');
 -- stores users history
 CREATE TABLE IF NOT EXISTS user_history (
     id INT AUTO_INCREMENT PRIMARY KEY,
