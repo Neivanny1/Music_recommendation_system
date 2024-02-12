@@ -34,7 +34,7 @@ def recommendation(song_df):
 # flask app
 app = Flask(__name__)
 # paths
-@app.route('/')
+@app.route('/home')
 def index():
     names = list(df['song'].values)
     return render_template('index.html',name = names)
