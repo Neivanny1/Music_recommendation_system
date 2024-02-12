@@ -34,16 +34,15 @@ def recommendation(song_df):
 # flask app
 app = Flask(__name__)
 # paths
-@app.route('/recom_home')
+@app.route('/recom_home', methods=['GET', 'POST'])
 def index():
-    names = list(df['song'].values)
-    return render_template('index.html',name = names)
-@app.route('/recom/',methods=['POST'])
-def mysong():
-    user_song = request.form['names']
-    songs = recommendation(user_song)
-
-    return render_template('index.html',songs=songs)
+    if request.method == 'GET':
+        names = list(df['song'].values)
+        return render_template('index.html', name=names)
+    elif request.method == 'POST':
+        user_song = request.form['names']
+        songs = recommendation(user_song)
+        return render_template('index.html', songs=songs)
 
 """
 Gets event clicks from song clicked
