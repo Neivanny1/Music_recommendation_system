@@ -34,7 +34,7 @@ def recommendation(song_df):
 # flask app
 app = Flask(__name__)
 # paths
-@app.route('/recom_home', methods=['GET', 'POST'])
+@app.route('/', methods=['GET', 'POST'])
 def index():
     if request.method == 'GET':
         names = list(df['song'].values)
