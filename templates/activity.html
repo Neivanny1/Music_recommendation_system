@@ -1,0 +1,8 @@
+
+    <h2>Past activity</h2>
+
+    {% for song_id in song_ids %}
+        <iframe width="560" height="315" src="https://www.youtube.com/embed/{{ song_id }}" frameborder="0" allowfullscreen></iframe>
+        <br> <br> <br>
+    {% endfor %}
+

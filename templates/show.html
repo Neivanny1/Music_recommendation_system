@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" integrity="sha384-e2EogJGBQNV0kHKL3ym3epn01qI2s1f5F3VbOqL5Tec6DHDH4B7nZkcbIxMlqf1N" crossorigin="anonymous">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+  <style>
+    .more2 {
+        display: flex;
+        text-align: center;
+    }
+
+    .more2 a {
+        padding: 10px;
+        margin: 5px;
+        text-decoration: none;
+        color: #000;
+        background-color:#fff;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+    .more2 a.active {
+            background-color: #25a3f1;
+            color: #fff; /* Text color for better contrast */
+        }
+
+    .more-content {
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        margin-bottom: 20px;
+    }
+  /* Global */
+  .container{
+    width:80%;
+    margin:auto;
+    overflow:hidden;
+  }
+  .button_1{
+    height:38px;
+    background:#05a8d1d0;
+    border:0;
+    padding-left: 20px;
+    padding-right:20px;
+    color:#ffffff;
+  }
+  
+  .dark{
+    padding:15px;
+    background:#1ec8d4;
+    color:#ffffff;
+    margin-top:10px;
+    margin-bottom:10px;
+  }
+  /* Showcase */
+  #showcase{
+    min-height:400px;
+    background-image:url('./img.png') no-repeat;
+    background-position: center;
+    background-size: cover;
+    text-align:center;
+    color:#72aff5;
+  }
+  
+  #showcase h1{
+    margin-top:100px;
+    font-size:55px;
+    margin-bottom:10px;
+  }
+  
+  #showcase p{
+    font-size:20px;
+  }
+  
+  /* Newsletter */
+  #newsletter{
+    padding:15px;
+    color:#ffffff;
+    background:#35424a
+  }
+  
+  #newsletter h1{
+    float:left;
+  }
+  
+  #newsletter form {
+    float:right;
+    margin-top:15px;
+  }
+  
+  #newsletter input[type="email"]{
+    padding:4px;
+    height:25px;
+    width:250px;
+  }
+  /* Sidebar */
+  aside#sidebar{
+    float:right;
+    width:30%;
+    margin-top:10px;
+  }
+  
+  aside#sidebar .quote input, aside#sidebar .quote textarea{
+    width:90%;
+    padding:5px;
+  }
+  
+  /* Main-col */
+  article#main-col{
+    float:left;
+    width:65%;
+  }
+  
+  #showcase{
+    background-color: transparent;
+  }
+  
+    #showcase h1{
+      margin-top:40px;
+    }
+  
+    #newsletter button, .quote button{
+      display:block;
+      width:100%;
+    }
+  
+    #newsletter form input[type="email"], .quote input, .quote textarea{
+      width:100%;
+      margin-bottom:5px;
+    }
+</style>
+</head>
+<body>
+
+<div class="more">
+    <h1 style="color: #5b6574;">Who are we</h1>
+    <div class="more2">
+      <div class="more2">
+        <a href="javascript:void(0);" class="active" onclick="showContent('mood')">Mood</a>
+        <a href="javascript:void(0);" onclick="showContent('about')">About</a>
+    </div>
+    </div>
+    <div class="more-content" id="content-mood">
+        <section id="showcase">
+            <div id="contain" class="container">
+              <h1>Welcome To Mood Magic</h1>
+              <br><br>
+              <p>Elevate your day with best songs recommneded to you by our system</p>
+            </div>
+          </section>
+          <section id="newsletter">
+            <div class="container">
+              <h1>Subscribe To Our Website</h1>
+              <form>
+                <input type="email" placeholder="Enter Email..." required>
+                <button type="submit" class="button_1">Subscribe</button>
+              </form>
+            </div>
+          </section>
+    </div>
+    <div class="more-content" id="content-about" style="display: none;">
+        <section id="newsletter">
+            <div class="container">
+              <h1 style="color:gray;">Subscribe To Our Website</h1>
+              <form>
+                <input type="email" placeholder="Enter Email..." required>
+                <button type="submit" class="button_1">Subscribe</button>
+              </form>
+            </div>
+          </section>
+        
+          <section id="main">
+            <div class="container">
+              <article id="main-col">
+                <h1 class="page-title">About Us</h1>
+                <p>
+               Mood magic is User Friendly Website design to bring and cheer up people moods by recommnding songs to them.</p>
+                <p class="blue">
+        For team work and Quick talent sport we developed a machine learning model that 
+        recommneds songs to user based on the dataset it has been trained on.
+        The algrothim recommneds songs to user which upon clicking it searches for  song from youtube and tries to pay it.
+        </p>
+              </article>
+        
+              <aside id="sidebar">
+                <div class="dark">
+                  <h3>What We Do</h3>
+                  <p>We try to build a refine model for song recomendations
+                     to chear up users moods as we believe songs sooths every mood one is in</div>
+              </aside>
+            </div>
+          </section>
+    </div>
+</div>
+<script>
+  function showContent(contentType) {
+      // Hide all content divs
+      document.getElementById('content-mood').style.display = 'none';
+      document.getElementById('content-about').style.display = 'none';
+
+      // Show the selected content
+      document.getElementById('content-' + contentType).style.display = 'block';
+
+      // Update the active class for styling
+      var links = document.getElementsByClassName('more2')[0].getElementsByTagName('a');
+      for (var i = 0; i < links.length; i++) {
+          links[i].classList.remove('active');
+      }
+      document.querySelector('a[href="javascript:void(0);"][onclick="showContent(\'' + contentType + '\')"]').classList.add('active');
+  }
+</script>
+</body>
+</html>

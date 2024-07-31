@@ -1,0 +1,13 @@
+{% extends 'layout.html' %}
+
+{% block title %} Home {% endblock %}
+
+{% block content %}
+    {% include 'search.html' %}
+    {% include 'play.html' %}
+{% endblock %}
+
+{% block scripts %}
+    {{ super() }}  {# Include content of parent scripts block #}
+    {% include 'script.html'%}
+{% endblock %}

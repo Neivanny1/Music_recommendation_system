@@ -1,0 +1,13 @@
+{% extends 'layout.html' %}
+
+{% block title %} Home {% endblock %}
+
+{% block content %}
+<div id="msg-container" class="msg" >Welcome back, {{ username }}!</div>
+    {% include 'show.html' %}
+{% endblock %}
+
+{% block scripts %}
+    {{ super() }}  {# Include content of parent scripts block #}
+    {% include 'script.html'%}
+{% endblock %}

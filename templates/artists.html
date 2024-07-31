@@ -1,0 +1,21 @@
+{% extends 'layout.html' %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<h2>Hello {{ username }}, Kindly Add your favourite artists Below 👇👇👇</h2>
+
+<form action="{{ url_for('artists') }}" method="post">
+    <p>Enter your 5 favorite artists:</p>
+
+    {% for i in range(1, 6) %}
+        <label for="artist{{ i }}">Artist {{ i }}:</label>
+        <br>
+        <input type="text" name="artist{{ i }}" required>
+        <br>
+    {% endfor %}   
+<br>
+    <input class="btn btn-primary" type="submit" value="Submit">
+</form>
+
+{% endblock %}
