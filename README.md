@@ -19,17 +19,17 @@ Main.py =====> loading songs from youtbe is hectic since most owners have blocke
 Home page screenshot ===========>
 <br>
 
-![Home page](auths/static/home.PNG)
+![Home page](static/home.PNG)
 Register page screenshot ===========>
 <br><br>
 
-![Home page](auths/static/Register.PNG)
+![Home page](static/Register.PNG)
 <br><br>
 
 Login page screenshot ===========>
 <br><br>
 
-![Home page](auths/static/login.PNG)
+![Home page](static/login.PNG)
 <br><br>
 
 <h1>Project URL:</h1><a href = 'musicrecommendationsystems.vercel'>Click Here</a>
