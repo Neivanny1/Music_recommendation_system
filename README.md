@@ -32,4 +32,4 @@ Login page screenshot ===========>
 ![Home page](auths/static/login.PNG)
 <br><br>
 
-<h1>Project URL:</h1><a href = 'http://portfolio.mwakazieric.tech/'>Click Here</a>
+<h1>Project URL:</h1><a href = 'musicrecommendation.vercel'>Click Here</a>
